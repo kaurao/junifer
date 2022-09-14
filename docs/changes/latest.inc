@@ -23,6 +23,8 @@ Enhancements
 
 - Created a the repository based on the mockup by by `Fede Raimondo`_.
 
+- Marker for functional connectivity using an atlas (:gh:`41` by `Amir Omidvarnia`_ and `Kaustubh R. Patil`_)
+
 Bugs
 ~~~~
 
