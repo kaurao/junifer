@@ -5,29 +5,18 @@
 # License: AGPL
 
 from nilearn import datasets, image
-from nilearn.maskers import NiftiLabelsMasker
-from numpy.testing import assert_array_equal
-
-from junifer.markers.parcel import ParcelAggregation
 from junifer.markers.alff_falff_atlas \
     import AmplitudeLowFrequencyFluctuationAtlas
 
-from ptpython.repl import embed # For debugging using ptpython
-# print('OKKKK')
-# embed(globals(), locals()) # --> In order to put a break point
 
 def test_AmplitudeLowFrequencyFluctuationAtlas() -> None:
     """Test AmplitudeLowFrequencyFluctuationAtlas."""
 
-    # print('OKKKK')
-    # embed(globals(), locals()) # --> In order to put a break point
-
     # get a dataset
     ni_data = datasets.fetch_spm_auditory(subject_id='sub001')
     fmri_img = image.concat_imgs(ni_data.func)  # type: ignore
-
     falff = AmplitudeLowFrequencyFluctuationAtlas(atlas='Schaefer100x7',
-                TR=.72)
+                                                  TR=.72)
     out = falff.compute({'data': fmri_img})
 
     assert 'ALFF' in out

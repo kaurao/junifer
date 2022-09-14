@@ -13,9 +13,6 @@ from ..utils import logger, raise_error
 from .base import BaseMarker
 from .parcel import ParcelAggregation
 
-from ptpython.repl import embed # For debugging using ptpython
-# print('OKKKK')
-# embed(globals(), locals()) # --> In order to put a break point
 
 @register_marker
 class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
@@ -36,10 +33,9 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
 
     def __init__(
         self, atlas, agg_method='mean', agg_method_params=None,
-        highpass_cutoff=0.01, lowpass_cutoff=0.1, butter_order=4, 
+        highpass_cutoff=0.01, lowpass_cutoff=0.1, butter_order=4,
         TR=None, name=None
     ) -> None:
-
         """Initialize the class."""
         self.atlas = atlas
         self.agg_method = agg_method
@@ -90,19 +86,19 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
             If the input does not have the required data.
 
         """
-        if self.highpass_cutoff<0 or self.highpass_cutoff is None:
+        if self.highpass_cutoff < 0 or self.highpass_cutoff is None:
             raise_error(
                 "The higher cutoff frequency must be a"
                 " positive float number."
             )
 
-        if self.lowpass_cutoff<0 or self.lowpass_cutoff is None:
+        if self.lowpass_cutoff < 0 or self.lowpass_cutoff is None:
             raise_error(
                 "The lower cutoff frequency must be a"
                 " positive float number."
             )
 
-        if self.TR<0 or self.TR is None:
+        if self.TR < 0 or self.TR is None:
             raise_error(
                 "The repetition time (TR) must be a"
                 " positive float number."
@@ -115,7 +111,7 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
                 f"\t Required (any of): {self._valid_inputs}"
             )
 
-        if self.butter_order<0 or self.butter_order is None:
+        if self.butter_order < 0 or self.butter_order is None:
             raise_error(
                 "The order of the butterworth filter must be"
                 " an integer number a larger than 1."
@@ -150,19 +146,17 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
 
         Returns
         -------
-        A dict with 
+        A dict with
             ROI-wise ALFF as a 1D numpy array.
             ROI-wise fALFF as a 1D numpy array.
 
         """
-        # print('OKKKK')
-        # embed(globals(), locals()) # --> In order to put a break point
-
         pa = ParcelAggregation(atlas=self.atlas, method=self.agg_method,
                                method_params=self.agg_method_params,
                                on="BOLD")
+
         # get the 2D timeseries after parcel aggregation
-        ts = pa.compute(input) # N_ROI x N_T
+        ts = pa.compute(input)  # N_ROI x N_T
         roi_names = ts['columns']
         ts = ts['data']
 

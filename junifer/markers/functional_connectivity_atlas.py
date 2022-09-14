@@ -120,7 +120,7 @@ class FunctionalConnectivityAtlas(BaseMarker):
 
         Returns
         -------
-        A dict with 
+        A dict with
             FC matrix as a 2D numpy array.
             Row names as a list.
             Col names as a list.
