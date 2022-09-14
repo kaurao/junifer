@@ -23,20 +23,23 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
 
      Parameters
     ----------
-    atlas
-    agg_method
-    agg_method_params
-    highpass_cutoff
-    lowpass_cutoff
-    TR
+    atlas : parcellation atlas
+    agg_method : the aggregation method for computing parcels
+    agg_method_params : parameters of the aggregation method
+    highpass_cutoff : higher cutoff frequency for f/ALFF
+    lowpass_cutoff : lower cutoff frequency for f/ALFF
+    butter_order : butterworth order for bandpass filtering
+    TR : repetition time of the fMRI time series
     name
 
     """
 
     def __init__(
         self, atlas, agg_method='mean', agg_method_params=None,
-        highpass_cutoff=0.01, lowpass_cutoff=0.1, TR=None, name=None
+        highpass_cutoff=0.01, lowpass_cutoff=0.1, butter_order=4, 
+        TR=None, name=None
     ) -> None:
+
         """Initialize the class."""
         self.atlas = atlas
         self.agg_method = agg_method
@@ -44,6 +47,7 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
             else agg_method_params
         self.highpass_cutoff = highpass_cutoff
         self.lowpass_cutoff = lowpass_cutoff
+        self.butter_order = butter_order
         self.TR = TR
 
         on = ["BOLD"]
@@ -111,6 +115,12 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
                 f"\t Required (any of): {self._valid_inputs}"
             )
 
+        if self.butter_order<0 or self.butter_order is None:
+            raise_error(
+                "The order of the butterworth filter must be"
+                " an integer number a larger than 1."
+            )
+
     def get_output_kind(self, input: List[str]) -> List[str]:
         """Get output kind.
 
@@ -162,7 +172,8 @@ class AmplitudeLowFrequencyFluctuationAtlas(BaseMarker):
         Wn = np.asarray(Wn)
         Wn = Wn/Nq
 
-        b, a = sg.butter(N=4, Wn=Wn, btype='bandpass')
+        butter_order = self.butter_order
+        b, a = sg.butter(N=butter_order, Wn=Wn, btype='bandpass')
         ts_filt = sg.filtfilt(b, a, ts, axis=0)
 
         ALFF = np.std(ts_filt, axis=0)
